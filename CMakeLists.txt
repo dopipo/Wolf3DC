@@ -11,6 +11,7 @@ add_executable(w3d_compiler
     src/lexer.cpp
     src/parser.cpp
     src/logger.cpp
+    src/ui.cpp
     src/dos_support.cpp
     src/android_support.cpp
 )
