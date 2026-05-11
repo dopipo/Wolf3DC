@@ -1,0 +1,34 @@
+[project]
+name=Wolfenstein 3D
+version=1.0
+target=dos
+
+[compiler]
+backend=djgpp
+memory_model=protected
+optimization_level=2
+debug_info=true
+
+[files]
+; Source files
+sources=game.c,map.c,render.c,weapons.c,enemy.c,player.c,audio.c,input.c
+headers=game.h,map.h,render.h,weapons.h,enemy.h,player.h,audio.h,input.h
+
+; Asset files (sprites, maps, textures)
+assets=sprites/,maps/,textures/
+
+[build]
+output_exe=wolf3d.exe
+clean_intermediates=true
+show_warnings=true
+
+[dos]
+; DOS-specific settings
+extender=cwsdpmi
+stack_size=65536
+heap_size=1048576
+
+[debug]
+; Debugging options
+generate_symbols=true
+include_debug_info=true
