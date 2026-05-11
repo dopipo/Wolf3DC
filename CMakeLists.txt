@@ -12,6 +12,9 @@ add_executable(w3d_compiler
     src/parser.cpp
     src/logger.cpp
     src/ui.cpp
+    src/optimizer.cpp
+    src/code_analyzer.cpp
+    src/interactive_shell.cpp
     src/dos_support.cpp
     src/android_support.cpp
 )
