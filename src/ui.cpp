@@ -129,11 +129,11 @@ void UI::printDebug(const std::string& text) {
 
 void UI::printStep(int step, const std::string& description) {
     std::cout << "\n";
-    printColored("=" + std::string(68, "="), Color::CYAN);
+    printColored("=" + std::string(68, '='), Color::CYAN);
     std::ostringstream oss;
     oss << "Step " << step << ": " << description;
     std::cout << oss.str() << std::endl;
-    printColored("=" + std::string(68, "="), Color::CYAN);
+    printColored("=" + std::string(68, '='), Color::CYAN);
 }
 
 void UI::printSubStep(const std::string& description) {
