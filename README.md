@@ -1,48 +1,58 @@
-# Wolf3DC - Advanced Wolfenstein 3D C to C++ Compiler
-huy
+# Wolf3DC - Wolfenstein 3D Borland C IDE Emulator
+
+**A modern IDE frontend for compiling Wolfenstein 3D source code using DJGPP/Open Watcom compilers.**
+
 ## Overview
-blya
-Wolf3DC is a modern, feature-rich compiler that converts legacy Wolfenstein 3D C code to modern C++. It goes beyond simple compilation with integrated code analysis, optimization, and an interactive development environment.
 
-**Version 2.0** - Now with interactive shell, code analysis, and advanced optimization!
+Wolf3DC emulates the classic Borland C++ IDE experience while providing a bridge to modern DOS development tools. It supports the original Wolfenstein 3D `.PRJ` (Borland project) format and compiles C code using industry-standard compilers like DJGPP.
 
-## Key Features
+This project is designed specifically for developers who want to **compile and modify the original Wolfenstein 3D source code** from the id-Software repository.
 
-### 🔧 **Compilation**
-- C to C++17 conversion with proper headers
-- Cross-platform support: Windows, Linux, macOS, DOS, Android
-- Target-specific optimization and code generation
-- Detailed error logging and diagnostics
+## Features
 
-### 📊 **Code Analysis**
-- Cyclomatic complexity calculation
-- Function and variable detection
-- Code metrics (lines, functions, loops, conditionals)
-- Issue detection (memory leaks, high complexity warnings)
-- Detailed analysis reports
+### 🎮 **Wolfenstein 3D Focused**
+- Native support for `.PRJ` (Borland C Project) files
+- Handles `.C`, `.H`, and `.ASM` source files
+- DOS memory models: real mode, protected mode (with CWSDPMI)
+- Optimization levels: O0, O1, O2, O3, Os
 
-### ⚡ **Optimization**
-- Multi-level optimization (O0-O3, Os)
-- Dead code elimination
-- Constant folding
-- Function inlining
-- Loop optimization
-- Code size estimation
+### 🛠️ **Compiler Integration**
+- **DJGPP** (primary) - GCC for DOS with 32-bit protected mode
+- **Open Watcom** - Classic DOS compiler alternative
+- Auto-detection of available compilers
+- Full support for linking object files
 
-### 💻 **Interactive Shell**
-- Command-based interface
-- Real-time compilation
-- On-demand code analysis
+### 🖥️ **Borland IDE-Style Interface**
+- Menu-driven TUI (Text User Interface)
+- Project management (create, open, save)
+- File manager for adding/removing source files
+- Compile with one command
+- Run compiled executables directly
 - Settings management
-- Help system
 
-## Installation
+## System Requirements
 
-### Prerequisites
+- **Linux/macOS/Windows** (host system)
 - CMake 3.10+
-- C++17 compatible compiler (GCC, Clang, MSVC)
+- C++17 compatible compiler
+- **DJGPP** OR **Open Watcom** (for DOS cross-compilation)
 
-### Build
+### Installing DJGPP
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install djgpp-binutils djgpp-gcc djgpp-base
+```
+
+**macOS (Homebrew):**
+```bash
+brew install djgpp
+```
+
+**Windows:**
+Download from [DJGPP Project](http://www.delorie.com/djgpp/)
+
+## Building Wolf3DC
 
 ```bash
 mkdir build
@@ -51,162 +61,176 @@ cmake ..
 make
 ```
 
+Executable: `./bin/w3d_ide` (Linux/macOS) or `bin\\w3d_ide.exe` (Windows)
+
 ## Usage
 
-### Interactive Mode (Recommended)
-
-Start the interactive shell without arguments:
+### Running the IDE
 
 ```bash
-./w3d_compiler
+./bin/w3d_ide
 ```
 
-This opens an interactive menu with commands:
+You'll see the Borland-style menu:
 
 ```
-[W3D] > help
+╔════════════════════════════════════════════════════════════════╗
+║     WOLF3DC - Wolfenstein 3D Borland C IDE Emulator v1.0      ║
+║                    DOS Compiler Frontend                        ║
+╚════════════════════════════════════════════════════════════════╝
 
-compile <input.c> <output.cpp> [options]
-  Compile C file to C++
-  
-analyze <file.c>
-  Analyze code complexity and metrics
-  
-optimize <file.c> [level]
-  Optimize code (0-3)
-  
-settings
-  Show compiler settings
-  
-about
-  Show about information
+Main Menu:
+
+  [N] New Project
+  [O] Open Project
+  [C] Compile
+  [R] Run
+  [S] Settings
+  [F] File Manager
+  [H] Help
+  [Q] Quit
+
+────────────────────────────────────────────────────────────────
+Command:
 ```
 
-### Batch Mode
+### Example: Compiling Wolfenstein 3D
 
-Compile directly from command line:
+1. **Create a new project** or **open** an existing `.PRJ` file from id-Software's repository
+2. **Add source files** (`.C` and `.ASM` files)
+3. **Compile** - Wolf3DC will automatically:
+   - Compile all `.C` files with DJGPP
+   - Assemble `.ASM` files with NASM
+   - Link everything into a DOS executable
+4. **Run** the resulting `.EXE`
 
-```bash
-# Basic compilation
-w3d_compiler input.c output.cpp
+## Project Format (.PRJ)
 
-# With target platform
-w3d_compiler game.c game.cpp --target dos --mode protected
+Borland C project files are simple text-based:
 
-# With optimization
-w3d_compiler game.c game.cpp --optimize O3
+```ini
+;
+; Wolfenstein 3D Borland C Project
+;
 
-# With code analysis
-w3d_compiler game.c game.cpp --analyze
+[PRJ]
+ProjectName=WOLF3D
+Output=WOLF3D.EXE
 
-# For Android
-w3d_compiler game.c game.cpp --target android --arch arm64
+[FILES]
+WL_MAIN.C
+WL_GAME.C
+WL_DRAW.C
+WL_PLAY.C
+WL_MENU.C
+WL_AGENT.C
+WL_ACT1.C
+WL_ACT2.C
+WL_STATE.C
+WL_INTER.C
+WL_SCALE.C
+WL_TEXT.C
+WL_DEBUG.C
+ID_MM.C
+ID_CA.C
+ID_IN.C
+ID_VH.C
+ID_VL.C
+ID_PM.C
+ID_SD.C
+WL_DR_A.ASM
+C0.ASM
+
+[OPTIONS]
+Optimization=O2
+MemoryModel=large
+DebugInfo=true
+Platform=dos_protected
 ```
 
-### Command Line Options
+Wolf3DC automatically parses and generates these files.
+
+## Supported File Types
+
+| Extension | Purpose |
+|-----------|----------|
+| `.C` | C source files |
+| `.H` | C header files (included automatically) |
+| `.ASM` | x86 assembly files (NASM format) |
+| `.OBJ` | Object files (compiled intermediates) |
+| `.PRJ` | Project configuration |
+| `.EXE` | Final DOS executable |
+
+## Architecture
 
 ```
---target <platform>    native | dos | android
---mode <mode>          real | protected (DOS only)
---arch <arch>          arm | arm64 (Android only)
---vesa                 Enable VESA support (DOS only)
---optimize <level>     O0 | O1 | O2 | O3 | Os
---analyze              Perform code analysis
---help                 Show help message
---version              Show version
---interactive          Start interactive shell
+Wolf3DC IDE Interface (TUI)
+        ↓
+Project Manager (.PRJ parsing/generation)
+        ↓
+Compiler Pipeline (DJGPP/Watcom wrapper)
+        ↓
+C Compiler (djgpp-gcc)
+        ↓
+Assembler (NASM)
+        ↓
+Linker (djgpp-ld with CWSDPMI)
+        ↓
+DOS .EXE (Protected Mode)
 ```
 
-## Project Architecture
+## Compiler Options
 
-```
-src/
-├── main.cpp                 # Entry point (batch & interactive modes)
-├── compiler.h/cpp          # Main compilation pipeline
-├── lexer.h/cpp             # Tokenization
-├── parser.h/cpp            # Syntax analysis & AST
-├── optimizer.h/cpp         # Code optimization
-├── code_analyzer.h/cpp     # Code metrics & analysis
-├── interactive_shell.h/cpp # Interactive REPL
-├── logger.h/cpp            # File logging
-├── ui.h/cpp                # Terminal UI & formatting
-├── dos_support.h/cpp       # DOS-specific features
-└── android_support.h/cpp   # Android-specific features
-```
+### Memory Models
+- `real` - 16-bit real mode (64KB segments)
+- `protected` - 32-bit protected mode with CWSDPMI extender (recommended)
+- `huge` - Extended memory
 
-## Example Workflow
+### Optimization Levels
+- `O0` - No optimization (fastest compile)
+- `O1` - Basic optimization
+- `O2` - Recommended for W3D
+- `O3` - Aggressive optimization
+- `Os` - Size optimization
 
-### Interactive Mode
+## Troubleshooting
 
-```
-$ ./w3d_compiler
+### "No suitable DOS C compiler found"
 
-======================================================================
-  W3D COMPILER - Wolfenstein 3D C to C++ Compiler
-                         Version 2.0
-======================================================================
+Ensure DJGPP or Open Watcom is installed and in your PATH.
 
-Welcome to W3D Compiler - Interactive Mode
+### Compilation fails with linker errors
 
-Quick Commands:
-  [C]ompile    - Compile C file to C++
-  [A]nalyze    - Analyze code complexity
-  [O]ptimize   - Optimize generated code
-  [M]enu       - Show this menu
-  [H]elp       - Show help
-  [S]ettings   - Show settings
-  exit/quit    - Exit program
+- Check that all source files are properly added to the project
+- Ensure `.ASM` files are in NASM format, not Intel/AT&T format
+- Verify memory model settings match your source code
 
-[W3D] > compile
-Input file: game.c
-Output file: game.cpp
+### Generated .EXE won't run on real DOS
 
-======================================================================
-Step 1: Reading source file
-======================================================================
-  ├─ Opening file: game.c
-[✓] File read successfully
-    File size              :                 1250 bytes
+- Make sure "protected mode" is selected (requires CWSDPMI.EXE)
+- For real DOS 86 compatibility, switch to "real mode" (16-bit)
 
-...
+## Development
 
-[W3D] > analyze
-File to analyze: game.c
+Wolf3DC is organized into modular components:
 
-...
+- **`ide_interface.cpp`** - Main UI loop and menu handling
+- **`project_manager.cpp`** - Project file parsing and management
+- **`compiler_pipeline.cpp`** - Compiler detection and execution
+- **`ui.cpp`** - Terminal formatting and utilities
 
-[W3D] > exit
-Exiting W3D Compiler...
-```
+## References
 
-## Logging
-
-All operations are logged to `w3d_compiler.log` with:
-- Timestamps
-- Log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- Detailed operation tracking
-- Error diagnostics
-
-## Supported Platforms
-
-| Platform | Status | Notes |
-|----------|--------|-------|
-| Windows  | ✓      | Full support |
-| Linux    | ✓      | Full support |
-| macOS    | ✓      | Full support |
-| DOS      | ✓      | Real/Protected mode |
-| Android  | ✓      | ARM/ARM64 |
-
-## Performance
-
-- Fast tokenization: ~100,000 lines/second
-- Efficient parsing with AST generation
-- Optimized code generation
-- Low memory footprint
+- [Wolfenstein 3D Source Code](https://github.com/id-Software/wolf3d)
+- [DJGPP Documentation](http://www.delorie.com/djgpp/)
+- [Open Watcom Compiler](https://github.com/open-watcom/open-watcom-v2)
+- [CWSDPMI DOS Extender](http://www.delorie.com/djgpp/v2misc/cwsdpmi/)
 
 ## License
 
-MIT
+MIT License - See LICENSE file for details
+
+Note: Wolfenstein 3D source code is under id-Software's license terms.
 
 ## Author
 

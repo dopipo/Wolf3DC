@@ -1,57 +1,34 @@
 cmake_minimum_required(VERSION 3.10)
-project(W3D_Compiler)
+project(Wolf3DC)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Основной исполняемый файл
-add_executable(w3d_compiler
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Source files
+set(SOURCES
     src/main.cpp
-    src/compiler.cpp
-    src/lexer.cpp
-    src/parser.cpp
-    src/logger.cpp
     src/ui.cpp
-    src/optimizer.cpp
-    src/code_analyzer.cpp
-    src/interactive_shell.cpp
-    src/dos_support.cpp
-    src/android_support.cpp
+    src/project_manager.cpp
+    src/compiler_pipeline.cpp
+    src/ide_interface.cpp
 )
 
-# Включаемые директории
-target_include_directories(w3d_compiler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+# Headers
+set(HEADERS
+    src/ui.h
+    src/project_manager.h
+    src/compiler_pipeline.h
+    src/ide_interface.h
+)
 
-# Флаги компиляции
-if(MSVC)
-    target_compile_options(w3d_compiler PRIVATE /W4)
+# Create executable
+add_executable(w3d_ide ${SOURCES} ${HEADERS})
+
+# Platform-specific settings
+if(WIN32)
+    target_compile_options(w3d_ide PRIVATE /W4)
 else()
-    target_compile_options(w3d_compiler PRIVATE -Wall -Wextra -Wpedantic)
-endif()
-
-# DOS специфичные флаги
-if(CMAKE_SYSTEM_NAME STREQUAL "DJGPP")
-    target_compile_options(w3d_compiler PRIVATE -m32)
-    target_link_options(w3d_compiler PRIVATE -m32)
-endif()
-
-# Android специфичные флаги
-if(ANDROID)
-    target_compile_definitions(w3d_compiler PRIVATE ANDROID_BUILD)
-    target_compile_definitions(w3d_compiler PRIVATE USE_OPENGL_ES)
-endif()
-
-# Мобильные платформы - отключаем файловое логирование если нужно
-if(ANDROID OR IOS)
-    target_compile_definitions(w3d_compiler PRIVATE MOBILE_PLATFORM)
-endif()
-
-# Linux/Unix поддержка
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_compile_definitions(w3d_compiler PRIVATE LINUX_BUILD)
-endif()
-
-# macOS поддержка
-if(APPLE)
-    target_compile_definitions(w3d_compiler PRIVATE MACOS_BUILD)
+    target_compile_options(w3d_ide PRIVATE -Wall -Wextra)
 endif()
