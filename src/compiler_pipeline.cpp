@@ -61,17 +61,15 @@ std::string CompilerPipeline::getCompilerCommand(CompilerBackend backend, const 
         if (opts.generateDebugInfo) cmd << " -g";
         
         // Memory model for DOS
-        if (opts.memoryModel == "large") cmd << " -mcmodel=large";
-        else if (opts.memoryModel == "huge") cmd << " -mcmodel=huge";
-        
-        // Protected mode
-        if (opts.memoryModel == "large" || opts.memoryModel == "huge") {
-            cmd << " -D__PROTECTED_MODE__";
+        if (opts.memoryModel == MemoryModel::PROTECTED_MODE) {
+            cmd << " -mcmodel=large -D__PROTECTED_MODE__";
+        } else if (opts.memoryModel == MemoryModel::REAL_MODE) {
+            cmd << " -mcmodel=small";
         }
     } else if (backend == CompilerBackend::OPEN_WATCOM) {
         cmd << "wcc386";
         if (opts.optimizationLevel == "O2") cmd << " -O2";
-        if (opts.memoryModel == "large") cmd << " -ml";
+        if (opts.memoryModel == MemoryModel::PROTECTED_MODE) cmd << " -ml";
     }
 
     return cmd.str();
