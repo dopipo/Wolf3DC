@@ -20,7 +20,7 @@ struct CompileOptions {
     CompilerBackend backend;
     MemoryModel memoryModel;
     std::string outputFile;
-    int optimizationLevel;  // 0-3
+    std::string optimizationLevel;  // O0, O1, O2, O3, Os
     bool generateDebugInfo;
     std::string includePaths;
     std::vector<std::string> defines;
